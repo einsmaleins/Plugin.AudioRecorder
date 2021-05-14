@@ -22,6 +22,9 @@ namespace Plugin.AudioRecorder
 		DateTime? startTime;
 		TaskCompletionSource<string> recordTask;
 
+		public float VoiceLevel { get; private set; }
+
+
 		/// <summary>
 		/// Gets the details of the underlying audio stream.
 		/// </summary>
@@ -144,20 +147,21 @@ namespace Plugin.AudioRecorder
 
 		void AudioStream_OnBroadcast (object sender, byte [] bytes)
 		{
-			var level = AudioFunctions.CalculateLevel (bytes);
+			VoiceLevel = AudioFunctions.CalculateLevel (bytes);
+			Debug.WriteLine("level == {0}", VoiceLevel);
 
-			if (level < NearZero && !audioDetected) // discard any initial 0s so we don't jump the gun on timing out
+			if (VoiceLevel < NearZero && !audioDetected) // discard any initial 0s so we don't jump the gun on timing out
 			{
-				Debug.WriteLine ("level == {0} && !audioDetected", level);
+				Debug.WriteLine ("level == {0} && !audioDetected", VoiceLevel);
 				return;
 			}
 
-			if (level > SilenceThreshold) // did we find a signal?
+			if (VoiceLevel > SilenceThreshold) // did we find a signal?
 			{
 				audioDetected = true;
 				silenceTime = null;
 
-				Debug.WriteLine ("AudioStream_OnBroadcast :: {0} :: level > SilenceThreshold :: bytes: {1}; level: {2}", DateTime.Now, bytes.Length, level);
+				Debug.WriteLine ("AudioStream_OnBroadcast :: {0} :: level > SilenceThreshold :: bytes: {1}; level: {2}", DateTime.Now, bytes.Length, VoiceLevel);
 			}
 			else // no audio detected
 			{
@@ -176,7 +180,7 @@ namespace Plugin.AudioRecorder
 				{
 					silenceTime = DateTime.Now;
 
-					Debug.WriteLine ("AudioStream_OnBroadcast :: {0} :: Near-silence detected :: bytes: {1}; level: {2}", silenceTime, bytes.Length, level);
+					Debug.WriteLine ("AudioStream_OnBroadcast :: {0} :: Near-silence detected :: bytes: {1}; level: {2}", silenceTime, bytes.Length, VoiceLevel);
 				}
 			}
 
