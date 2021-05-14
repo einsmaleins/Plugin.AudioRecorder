@@ -12,7 +12,7 @@ namespace AudioRecord.Forms
 
 		public MainPage ()
 		{
-			InitializeComponent ();
+			InitializeComponent();
 
 			recorder = new AudioRecorderService
 			{

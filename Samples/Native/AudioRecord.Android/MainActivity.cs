@@ -1,14 +1,14 @@
-﻿using Android.App;
+using Android.App;
 using Android.Widget;
 using Android.OS;
 using Android.Support.V7.App;
-using Plugin.AudioRecorder;
 using System;
 using System.Threading.Tasks;
 using Android.Support.V4.Content;
 using Android;
 using Android.Content.PM;
 using Android.Support.V4.App;
+using Plugin.AudioRecorder;
 
 namespace AudioRecord.Android
 {
